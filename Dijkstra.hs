@@ -109,6 +109,20 @@ dijkstra' next found visited previous costs current =
 -- @next@. This will find the least-costly path from an initial state to a
 -- state for which @found@ returns 'True'. Returns 'Nothing' if no path to a
 -- solved state is possible.
+--
+-- === Example: Making change problem
+--
+-- >>> :{
+-- makeChange target =
+--    dijkstra (next `pruning` (> target)) (==target) 0 >>=
+--    Just . snd >>= Just . ((zipWith (flip (-))) <*> tail)
+--    where
+--        coinValues = [1,5,10,25]
+--        next v = map (\x -> (v + x, 1)) coinValues
+-- :}
+--
+-- >>> makeChange 67
+-- Just [25,25,10,5,1,1]
 dijkstra ::
     (Ord state, Ord cost, Num cost)
     => (state -> [(state, cost)])
